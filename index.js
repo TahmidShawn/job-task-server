@@ -53,12 +53,25 @@ async function run() {
     res.send(result);
   });
 
-  // app.get('/menu/:id', async (req, res) => {
-  //   const id = req.params.id;
-  //   const query = { _id: new ObjectId(id) }
-  //   const result = await menuCollection.findOne(query);
-  //   res.send(result);
-  // })
+  app.put("/task/:id", async (req, res) => {
+    const id = req.params.id;
+    const filter = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const task = req.body;
+
+    const updateJob = {
+      $set: {
+        title: task.title,
+        priority: task.priority,
+        description: task.description,
+        deadline: task.deadline,
+        time: task.time,  
+      },
+    };
+
+    const result = await taskCollection.updateOne(filter, updateJob, options);
+    res.send(result);
+  });
 
   app.post("/task", async (req, res) => {
     const item = req.body;
